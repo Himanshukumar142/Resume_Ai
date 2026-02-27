@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% block meta_description %}Log in to your ResumeAI account to access full AI-powered resume analysis.{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="auth-logo">⚡</div>
+            <h1>Welcome back</h1>
+            <p>Log in to unlock your full AI resume analysis</p>
+        </div>
+
+        <form method="POST" action="{{ url_for('auth.login') }}" id="loginForm" novalidate>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="input-wrap">
+                    <input type="password" id="password" name="password" placeholder="Your password"
+                        autocomplete="current-password" required>
+                    <button type="button" class="toggle-pw" aria-label="Toggle password visibility"
+                        onclick="togglePw('password', this)">👁</button>
+                </div>
+            </div>
+
+            <div class="form-row-check">
+                <label class="check-label">
+                    <input type="checkbox" name="remember" id="remember">
+                    <span>Remember me</span>
+                </label>
+            </div>
+
+            <button type="submit" class="btn-primary" style="width:100%;margin-top:8px;" id="loginBtn">
+                <span id="loginBtnText">Log In</span>
+                <span class="spinner" id="loginSpinner"></span>
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            Don't have an account? <a href="{{ url_for('auth.register') }}">Sign up free →</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function togglePw(id, btn) {
+        const input = document.getElementById(id);
+        if (input.type === 'password') { input.type = 'text'; btn.textContent = '🙈'; }
+        else { input.type = 'password'; btn.textContent = '👁'; }
+    }
+    document.getElementById('loginForm').addEventListener('submit', function () {
+        document.getElementById('loginBtnText').textContent = 'Logging in…';
+        document.getElementById('loginSpinner').style.display = 'inline-block';
+        document.getElementById('loginBtn').disabled = true;
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+{% block title %}Free ATS Score Checker{% endblock %}
+{% block meta_description %}Check your resume's ATS match score for free. Upload your resume and paste a job description
+to get an instant score.{% endblock %}
+
+{% block content %}
+
+<!-- ── Hero ── -->
+<section class="lp-hero">
+    <div class="lp-hero-inner">
+        <div class="badge anim-fadein">✦ AI-Powered · Free to Use</div>
+        <h1 class="lp-title anim-fadein-d1">
+            Beat the ATS.<br>Land More Interviews.
+        </h1>
+        <p class="lp-subtitle anim-fadein-d2">
+            Upload your resume and paste a job description. Get an instant ATS match score — free, no account needed.
+            Unlock full AI coaching when you sign up.
+        </p>
+        <div class="lp-cta-row anim-fadein-d3">
+            <a href="#ats-checker" class="btn-primary btn-lg">Check My Score Free</a>
+            <a href="{{ url_for('auth.register') }}" class="btn-outline btn-lg">Get Full Analysis →</a>
+        </div>
+    </div>
+    <div class="lp-hero-visual anim-fadein-d2">
+        <div class="hero-score-card">
+            <div class="hero-ring-wrap">
+                <svg width="120" height="120" viewBox="0 0 120 120">
+                    <circle class="ring-bg" cx="60" cy="60" r="50" />
+                    <circle class="ring-demo" cx="60" cy="60" r="50" style="stroke-dashoffset:82;stroke:#10b981" />
+                </svg>
+                <div class="hero-ring-label"><span class="hero-score-num">74</span><span
+                        class="hero-score-sub">/100</span></div>
+            </div>
+            <div class="hero-card-meta">
+                <div class="hero-card-title">ATS Match Score</div>
+                <div class="hero-tags">
+                    <span class="tag tag-green">✓ Keywords Matched</span>
+                    <span class="tag tag-amber">⚡ Skills Gap Found</span>
+                    <span class="tag tag-blue">✦ AI Tips Ready</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── Features ── -->
+<section class="lp-features">
+    <div class="lp-section-inner">
+        <div class="feat-grid">
+            <div class="feat-card">
+                <div class="feat-icon">🎯</div>
+                <h3>Instant ATS Score</h3>
+                <p>Semantic similarity scoring shows exactly how well your resume matches the job — no account needed.
+                </p>
+            </div>
+            <div class="feat-card">
+                <div class="feat-icon">🤖</div>
+                <h3>AI Coaching (Pro)</h3>
+                <p>Gemini AI analyses your resume against the JD and gives 5 specific, actionable improvements.</p>
+            </div>
+            <div class="feat-card">
+                <div class="feat-icon">📚</div>
+                <h3>Knowledge Base Tips</h3>
+                <p>RAG-powered retrieval finds the most relevant resume tips from our curated knowledge base.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── ATS Checker ── -->
+<section class="lp-checker" id="ats-checker">
+    <div class="lp-section-inner">
+        <div class="section-header">
+            <div class="badge">Free Tool</div>
+            <h2>Check Your ATS Score</h2>
+            <p>Upload your resume & paste the job description to get your match score instantly.</p>
+        </div>
+
+        <div class="checker-grid">
+            <!-- Form -->
+            <div class="card checker-form-card">
+                <div class="card-title">Upload &amp; Analyze</div>
+
+                <div class="alert-error" id="landingError" role="alert">
+                    <span>⚠️</span>
+                    <span id="landingErrorMsg">An error occurred.</span>
+                </div>
+
+                <form id="landingForm" enctype="multipart/form-data" novalidate>
+                    <div class="form-group">
+                        <label for="landingResume">Resume File</label>
+                        <div class="file-upload-area" id="landingUploadArea">
+                            <input type="file" id="landingResume" name="resume" accept=".pdf,.docx" required>
+                            <div class="file-upload-icon">📄</div>
+                            <div class="file-upload-text"><span>Choose a file</span> or drag &amp; drop</div>
+                            <div id="landingFileName" style="display:none;"></div>
+                        </div>
+                        <small style="color:var(--text-secondary);font-size:0.78rem;margin-top:6px;display:block;">PDF
+                            or DOCX · Max 10 MB</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="landingJD">Job Description</label>
+                        <textarea id="landingJD" name="job_description" rows="7"
+                            placeholder="Paste the full job description here…" required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-primary" id="landingSubmit" style="width:100%">
+                        <span id="landingBtnText">Get My Score</span>
+                        <span class="spinner" id="landingSpinner"></span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Result -->
+            <div class="checker-result-col">
+                <div id="landingResult" class="card result-placeholder" style="display:none;">
+                    <div class="card-title">Your ATS Match Score</div>
+                    <div class="score-section">
+                        <div class="score-ring-container">
+                            <svg class="score-ring-svg" width="120" height="120" viewBox="0 0 120 120">
+                                <circle class="score-ring-bg" cx="60" cy="60" r="50" />
+                                <circle class="score-ring-fg" id="landingScoreRing" cx="60" cy="60" r="50" />
+                            </svg>
+                            <div class="score-label">
+                                <span class="score-number" id="landingScoreValue">0</span>
+                                <span class="score-pct">/ 100</span>
+                            </div>
+                        </div>
+                        <div class="score-meta">
+                            <h3 id="landingScoreLabel">—</h3>
+                            <p>Semantic similarity between your resume and the job description, computed using sentence
+                                embeddings.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upsell card -->
+                <div class="card upsell-card" id="upsellCard" style="display:none;">
+                    <div class="upsell-icon">🚀</div>
+                    <h3>Want the Full Picture?</h3>
+                    <p>Sign up free to unlock <strong>AI-powered suggestions</strong>, <strong>knowledge-base
+                            tips</strong>, and detailed coaching from Gemini.</p>
+                    <a href="{{ url_for('auth.register') }}" class="btn-primary" style="width:100%;margin-top:12px;">Get
+                        Full Analysis Free</a>
+                    <a href="{{ url_for('auth.login') }}" class="login-link">Already have an account? Log in</a>
+                </div>
+
+                <!-- Default placeholder -->
+                <div class="card placeholder-hint" id="placeholderHint">
+                    <div class="placeholder-icon">📊</div>
+                    <p>Your score will appear here after you upload your resume and paste a job description.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── CTA Banner ── -->
+<section class="lp-cta-banner">
+    <div class="lp-section-inner cta-inner">
+        <div>
+            <h2>Ready for full AI coaching?</h2>
+            <p>Create a free account and get Gemini-powered resume suggestions in seconds.</p>
+        </div>
+        <a href="{{ url_for('auth.register') }}" class="btn-primary btn-lg">Create Free Account →</a>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/landing.js') }}"></script>
+{% endblock %}
